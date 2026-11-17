@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#2a1019">
+  <meta name="color-scheme" content="light">
+  <!-- Admin page: scripts only from this site; API calls only to Apps Script (and the local emulator for tests). -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <title>Our Little Universe — Admin</title>
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="config.js"></script>
+  <script type="module" src="js/admin.js"></script>
+</head>
+<body class="is-loading">
+  <!-- No login form here: everybody signs in on the one login page (index.html). -->
+  <!-- ============================== not configured ============================== -->
+  <main id="config-view" class="login" hidden>
+    <div class="card login-card">
+      <h1>Not connected</h1>
+      <p class="muted">This page has no backend configured. Add <code>config.js</code> with the Apps Script Web App URL (see the README).</p>
+    </div>
+  </main>
+
+  <!-- ============================== dashboard ============================== -->
+  <div id="app-view" hidden>
+    <header class="topbar">
+      <div class="brand">Our Little Universe <span class="badge">Admin</span></div>
+      <nav class="tabs" role="tablist" aria-label="Sections">
+        <button role="tab" data-tab="site" aria-selected="true">Site</button>
+        <button role="tab" data-tab="letter">Letter</button>
+        <button role="tab" data-tab="messages">Surprises</button>
+        <button role="tab" data-tab="photos">Photos</button>
+        <button role="tab" data-tab="music">Music</button>
+        <button role="tab" data-tab="security">Security</button>
+        <button role="tab" data-tab="activity">Activity</button>
+      </nav>
+      <div class="session">
+        <span id="session-info" class="muted small"></span>
+        <a class="btn btn-ghost" id="view-site" href="./" target="_blank" rel="noopener">View site</a>
+        <button class="btn btn-ghost" id="logout-btn" type="button">Sign out</button>
+      </div>
+    </header>
+
+    <main class="panels">
+      <section class="panel" data-panel="site" aria-label="Site texts and settings">
+        <form id="settings-form" class="card stack" novalidate>
+          <h2>Site texts &amp; settings</h2>
+          <div id="settings-fields" class="grid"></div>
+          <div class="actions"><button class="btn btn-primary" type="submit">Save site settings</button></div>
+        </form>
+      </section>
+
+      <section class="panel" data-panel="letter" hidden aria-label="Love letter">
+        <form id="letter-form" class="card stack" novalidate>
+          <h2>The letter</h2>
+          <label class="field"><span>Title</span><input name="title" maxlength="160"></label>
+          <label class="field"><span>Letter</span><textarea name="content" rows="14" maxlength="20000"></textarea></label>
+          <div class="grid">
+            <label class="field"><span>Signature</span><input name="signature" maxlength="120"></label>
+            <label class="field"><span>Date</span><input name="date" type="date"></label>
+            <label class="field"><span>Envelope colour</span><input name="envelopeColor" type="color"></label>
+            <label class="field"><span>Paper colour</span><input name="paperColor" type="color"></label>
+            <label class="field"><span>Seal colour</span><input name="sealColor" type="color"></label>
+            <label class="field"><span>Seal initials</span><input name="sealInitials" maxlength="3"></label>
+          </div>
+          <div class="actions"><button class="btn btn-primary" type="submit">Save letter</button></div>
+        </form>
+      </section>
+
+      <section class="panel" data-panel="messages" hidden aria-label="Surprise messages">
+        <div class="card stack">
+          <h2>Surprise messages</h2>
+          <form id="new-message-form" class="row" novalidate>
+            <input name="message" maxlength="500" placeholder="A new little surprise…" aria-label="New surprise message">
+            <button class="btn btn-primary" type="submit">Add</button>
+          </form>
+          <ul id="messages-list" class="list"></ul>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="photos" hidden aria-label="Photos">
+        <div class="card stack">
+          <h2>Photos</h2>
+          <p class="muted small">Photos are added in the private Drive folder (see the README). Here you edit their details and visibility.</p>
+          <div id="photos-list" class="stack"></div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="music" hidden aria-label="Music">
+        <form id="music-form" class="card stack" novalidate>
+          <h2>Music</h2>
+          <p id="music-file" class="muted small"></p>
+          <label class="field"><span>Song title</span><input name="title" maxlength="160"></label>
+          <label class="field inline"><input name="enabled" type="checkbox"><span>Play music on the site</span></label>
+          <label class="field"><span>Volume <output id="volume-out"></output></span><input name="volume" type="range" min="0" max="1" step="0.05"></label>
+          <div class="actions"><button class="btn btn-primary" type="submit">Save music</button></div>
+        </form>
+      </section>
+
+      <section class="panel" data-panel="security" hidden aria-label="Security">
+        <div class="grid two">
+          <form id="visitor-pw-form" class="card stack" novalidate>
+            <h2>Visitor password</h2>
+            <p class="muted small">Changing it signs every visitor out.</p>
+            <label class="field"><span>New visitor password</span><input name="newPassword" type="password" autocomplete="new-password" minlength="6" maxlength="128"></label>
+            <label class="field"><span>Repeat</span><input name="repeat" type="password" autocomplete="new-password" maxlength="128"></label>
+            <div class="actions"><button class="btn btn-primary" type="submit">Change visitor password</button></div>
+          </form>
+          <form id="admin-pw-form" class="card stack" novalidate>
+            <h2>Admin password</h2>
+            <p class="muted small">Changing it signs every admin out, including you.</p>
+            <label class="field"><span>Current admin password</span><input name="currentPassword" type="password" autocomplete="current-password" maxlength="128"></label>
+            <label class="field"><span>New admin password</span><input name="newPassword" type="password" autocomplete="new-password" minlength="10" maxlength="128"></label>
+            <label class="field"><span>Repeat</span><input name="repeat" type="password" autocomplete="new-password" maxlength="128"></label>
+            <div class="actions"><button class="btn btn-primary" type="submit">Change admin password</button></div>
+          </form>
+          <div class="card stack">
+            <h2>Sessions</h2>
+            <p class="muted small">End every visitor session (they need the password again), or sign out every admin session everywhere.</p>
+            <div class="actions">
+              <button class="btn" id="end-visitors-btn" type="button">End all visitor sessions</button>
+              <button class="btn btn-danger" id="logout-all-btn" type="button">Sign out all admins</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="activity" hidden aria-label="Activity log">
+        <div class="card stack">
+          <div class="row spread"><h2>Activity</h2><button class="btn btn-ghost" id="refresh-logs" type="button">Refresh</button></div>
+          <div class="table-wrap"><table class="logs"><thead><tr><th>Time</th><th>Who</th><th>Action</th><th>Result</th><th>Details</th></tr></thead><tbody id="logs-body"></tbody></table></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

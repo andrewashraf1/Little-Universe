@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#2a1019">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="A private little world.">
+  <!-- Content-Security-Policy: scripts only from this site (ES modules, config.js); styles from this site and
+       Google Fonts (incl. the theme's whitelisted fonts); images and music only from this site or blob:
+       (private Drive media arrives as base64 → Blob URLs); data: images only for demo mode's generated art;
+       API calls only to Apps Script. The 127.0.0.1/localhost entries serve the local test emulator and are
+       removed by the production build (scripts/build.js). -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' blob: data:; media-src blob:; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <title>A Little World Just for Us</title>
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&family=Pinyon+Script&display=swap">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/letter.css">
+  <link rel="stylesheet" href="css/animations.css">
+
+  <script src="config.js"></script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body class="is-gated">
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div id="cursor-glow" aria-hidden="true"></div>
+
+  <!-- =============================================================
+       GATE — the only thing a visitor sees before unlocking
+       ============================================================= -->
+  <section id="gate" class="gate" aria-labelledby="gate-title">
+    <div class="gate-aurora" aria-hidden="true"></div>
+
+    <div class="gate-inner">
+      <div class="gate-emblem" aria-hidden="true">
+        <svg viewBox="0 0 120 120" class="gate-heart">
+          <defs>
+            <radialGradient id="emblemGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#D6B779" stop-opacity=".45"/>
+              <stop offset="1" stop-color="#D6B779" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle class="gate-heart-glow" cx="60" cy="62" r="56" fill="url(#emblemGlow)"/>
+          <circle class="gate-orbit" cx="60" cy="62" r="44" fill="none" stroke="currentColor" stroke-opacity=".22" stroke-width=".8" stroke-dasharray="1 5"/>
+          <circle class="gate-orbit-dot" cx="104" cy="62" r="2.2" fill="#F5DDE3"/>
+          <path class="gate-heart-path" d="M60 86C44 75 35 66.5 35 56.2 35 48.4 41 43 48 43c5.2 0 9.4 3 12 7.2C62.6 46 66.8 43 72 43c7 0 13 5.4 13 13.2C85 66.5 76 75 60 86z"
+                fill="none" stroke="#D6B779" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <h1 id="gate-title" class="gate-title" data-gate="gateTitle">A Little World Just for Us</h1>
+      <p class="gate-subtitle" data-gate="gateSubtitle">Some memories are too special to be shared with everyone.</p>
+
+      <form id="gate-form" class="gate-form" autocomplete="off" novalidate>
+        <label for="gate-password" class="sr-only">Password</label>
+        <div class="gate-field">
+          <svg class="icon gate-field-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <input id="gate-password" name="password" type="password" inputmode="text"
+                 autocomplete="current-password" autocapitalize="off" spellcheck="false"
+                 placeholder="Our secret word" required maxlength="128" aria-describedby="gate-message">
+          <button type="button" class="gate-reveal" id="gate-reveal" aria-label="Show password" aria-pressed="false">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+        <button type="submit" class="gate-button" id="gate-submit">
+          <span class="gate-button-label">Unlock our world</span>
+          <span class="gate-button-spinner" aria-hidden="true"></span>
+        </button>
+        <p id="gate-message" class="gate-message" role="status" aria-live="polite"></p>
+      </form>
+
+      <div id="gate-setup" class="gate-setup" hidden>
+        <p><strong>Not connected yet.</strong> This site isn't linked to its Google backend yet, so there is nothing private to unlock. Follow the README to add <code>config.js</code>.</p>
+        <a class="gate-setup-link" href="?demo">Explore the design demo</a>
+      </div>
+      <p id="gate-demo-note" class="gate-demo-note" hidden>Demo mode — sample content only. The password is <strong>demo</strong>.</p>
+    </div>
+  </section>
+
+  <div id="bloom" class="bloom" aria-hidden="true"></div>
+
+  <!-- =============================================================
+       PRIVATE WORLD — filled in only after the server says yes
+       ============================================================= -->
+  <div id="world" class="world" hidden>
+    <a class="skip-link" href="#memories">Skip to memories</a>
+
+    <header class="site-nav" id="site-nav">
+      <a class="nav-brand" href="#home" data-bind="siteTitle"></a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="#home" data-nav="home">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l1.9 4.6 5 .4-3.8 3.2 1.2 4.9L12 14l-4.3 2.6 1.2-4.9L5.1 8.5l5-.4z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <span>Home</span>
+        </a>
+        <a href="#memories" data-nav="memories">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="10" r="1.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M4 17l5-4.5 3.5 3 3-2.5L20 17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <span>Our Memories</span>
+        </a>
+        <a href="#letter" data-nav="letter">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="6" width="17" height="12.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <span>A Letter for You</span>
+        </a>
+      </nav>
+      <button class="nav-lock" id="nav-lock" type="button" aria-label="Lock our world">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section id="home" class="hero" data-section="home" aria-labelledby="hero-title">
+        <div class="hero-media" aria-hidden="true">
+          <div class="hero-photo" id="hero-photo"></div>
+          <div class="hero-aurora"></div>
+          <div class="hero-vignette"></div>
+        </div>
+        <div class="hero-content">
+          <p class="hero-eyebrow" data-bind="heroEyebrow"></p>
+          <h2 id="hero-title" class="hero-title" data-bind="heroTitle" tabindex="-1"></h2>
+          <p class="hero-subtitle" data-bind="heroSubtitle"></p>
+          <p class="hero-stats" id="hero-stats" aria-live="off"></p>
+        </div>
+
+        <button class="surprise-star" id="surprise-star" type="button" aria-label="A little secret" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c.6 4.6 2.9 6.9 7.5 7.5-4.6.6-6.9 2.9-7.5 7.5-.6-4.6-2.9-6.9-7.5-7.5 4.6-.6 6.9-2.9 7.5-7.5z" fill="currentColor"/></svg>
+        </button>
+
+        <a class="scroll-cue" href="#memories" aria-label="Scroll to our memories">
+          <span class="scroll-cue-line"></span>
+          <span class="scroll-cue-label">Scroll</span>
+        </a>
+      </section>
+
+      <!-- MEMORIES -->
+      <section id="memories" class="memories" data-section="memories" aria-labelledby="memories-title">
+        <div class="section-head" data-reveal>
+          <p class="section-kicker" id="memories-count"></p>
+          <h2 id="memories-title" class="section-title" data-bind="memoriesTitle"></h2>
+          <p class="section-subtitle" data-bind="memoriesSubtitle"></p>
+        </div>
+        <div class="gallery" id="gallery" aria-live="polite"></div>
+      </section>
+
+      <!-- LETTER -->
+      <section id="letter" class="letter-section" data-section="letter" aria-labelledby="letter-title">
+        <div class="section-head" data-reveal>
+          <p class="section-kicker">Sealed, just for you</p>
+          <h2 id="letter-title" class="section-title" data-bind="letterSectionTitle"></h2>
+        </div>
+        <div id="envelope-root" class="envelope-root"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <svg class="footer-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19.5C7 16 4 13.2 4 10.1 4 7.8 5.8 6 8 6c1.6 0 3 .9 4 2.2C13 6.9 14.4 6 16 6c2.2 0 4 1.8 4 4.1 0 3.1-3 5.9-8 9.4z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      <p data-bind="footerText"></p>
+    </footer>
+
+    <button class="music-toggle" id="music-toggle" type="button" aria-pressed="false" hidden>
+      <span class="music-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="music-label">
+        <span class="music-state">Play our song</span>
+        <span class="music-title" id="music-title"></span>
+      </span>
+    </button>
+  </div>
+
+  <!-- Surprise card -->
+  <div class="surprise-card" id="surprise-card" role="dialog" aria-modal="false" aria-labelledby="surprise-text" hidden>
+    <svg class="surprise-card-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c.6 4.6 2.9 6.9 7.5 7.5-4.6.6-6.9 2.9-7.5 7.5-.6-4.6-2.9-6.9-7.5-7.5 4.6-.6 6.9-2.9 7.5-7.5z" fill="currentColor"/></svg>
+    <p id="surprise-text" class="surprise-text"></p>
+    <button type="button" class="surprise-close" id="surprise-close">Keep it close</button>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+    <div class="lb-backdrop" data-lb-close></div>
+    <div class="lb-stage" id="lb-stage">
+      <img class="lb-img" id="lb-img" alt="" draggable="false">
+      <div class="lb-loader" aria-hidden="true"></div>
+    </div>
+    <div class="lb-caption" id="lb-caption">
+      <p class="lb-count" id="lb-count"></p>
+      <h3 class="lb-title" id="lb-title"></h3>
+      <p class="lb-meta" id="lb-meta"></p>
+      <p class="lb-text" id="lb-text"></p>
+    </div>
+    <button class="lb-btn lb-close" type="button" data-lb-close aria-label="Close">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <button class="lb-btn lb-prev" type="button" id="lb-prev" aria-label="Previous photo">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="lb-btn lb-next" type="button" id="lb-next" aria-label="Next photo">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <div class="preview-badge" id="preview-badge" hidden>Preview</div>
+  <noscript><p class="noscript">This little world needs JavaScript to open.</p></noscript>
+</body>
+</html>

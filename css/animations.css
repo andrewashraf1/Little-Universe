@@ -1,0 +1,109 @@
+/* =========================================================================
+   Our Little Universe — keyframes
+   All motion is disabled/shortened by the prefers-reduced-motion rule in
+   tokens.css; JavaScript also takes a static path in that case.
+   ========================================================================= */
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(18px); filter: blur(4px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes aurora-drift {
+  0%   { transform: translate3d(-3%, -2%, 0) rotate(0deg) scale(1); }
+  50%  { transform: translate3d(2%, 3%, 0) rotate(8deg) scale(1.08); }
+  100% { transform: translate3d(4%, -1%, 0) rotate(-6deg) scale(1.03); }
+}
+
+@keyframes draw-heart {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes heart-breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.045); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(0.96); }
+  50%      { opacity: 1;    transform: scale(1.04); }
+}
+
+@keyframes heart-bloom {
+  0%   { stroke-dashoffset: 0; transform: scale(1); fill: rgb(214 183 121 / 0); }
+  45%  { transform: scale(1.12); fill: rgb(214 183 121 / 0.35); }
+  100% { stroke-dashoffset: 0; transform: scale(1.35); fill: rgb(245 221 227 / 0.9); opacity: 0; }
+}
+
+@keyframes bloom {
+  0%   { opacity: 0; transform: scale(0); }
+  30%  { opacity: 1; }
+  60%  { opacity: 1; transform: scale(90); }
+  100% { opacity: 0; transform: scale(110); }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes sheen {
+  0%, 70% { transform: translateX(-120%); }
+  100%    { transform: translateX(120%); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-9px); }
+  30% { transform: translateX(8px); }
+  45% { transform: translateX(-6px); }
+  60% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.55; transform: scale(0.85) rotate(0deg); }
+  50%      { opacity: 1;    transform: scale(1.08) rotate(12deg); }
+}
+
+@keyframes scroll-drip {
+  0%   { top: -40%; }
+  100% { top: 110%; }
+}
+
+@keyframes shimmer {
+  from { background-position: 150% 0, 0 0; }
+  to   { background-position: -100% 0, 0 0; }
+}
+
+@keyframes eq {
+  0%, 100% { transform: scaleY(0.35); }
+  50%      { transform: scaleY(1); }
+}
+
+@keyframes sparkle-fly {
+  0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--dx, 0), var(--dy, -30px)) scale(0.2); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-0.6deg); }
+  50%      { transform: translateY(-10px) rotate(0.6deg); }
+}
+
+@keyframes shadow-float {
+  0%, 100% { transform: scaleX(1); opacity: 0.5; }
+  50%      { transform: scaleX(0.86); opacity: 0.32; }
+}
+
+@keyframes hint-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+
+@keyframes crease-fade {
+  from { opacity: 1; }
+  to   { opacity: 0.18; }
+}
+
+@keyframes seal-shine {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.7; }
+}
